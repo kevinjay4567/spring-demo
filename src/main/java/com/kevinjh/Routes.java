@@ -1,17 +1,18 @@
 package com.kevinjh;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/v1/users")
 public class Routes {
 
     private final UserRepository userRepository;
+    record newUserRequest(
+            String name,
+            Integer age
+    ) {}
 
     public Routes(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -23,5 +24,13 @@ public class Routes {
             return List.of(userRepository.findById(id));
         }
         return userRepository.findAll();
+    }
+
+    @PostMapping
+    public void createUser(@RequestBody newUserRequest request) {
+        User user = new User();
+        user.setName(request.name);
+        user.setAge(request.age);
+        userRepository.save(user);
     }
 }
