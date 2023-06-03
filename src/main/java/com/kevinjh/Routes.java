@@ -18,6 +18,10 @@ public class Routes {
     ) {
     }
 
+    record responseUser(
+            String msg
+    ){}
+
     public Routes(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -31,11 +35,11 @@ public class Routes {
     }
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody newUserRequest request) {
+    public ResponseEntity<responseUser> createUser(@RequestBody newUserRequest request) {
         User user = new User();
         user.setName(request.name);
         user.setAge(request.age);
         userRepository.save(user);
-        return new ResponseEntity<>("User create", HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(new responseUser("User created"));
     }
 }
